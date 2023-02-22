@@ -3,15 +3,20 @@ package service
 import "github.com/vietbui1502/RestAPIGolang/domain"
 
 type CustomerService interface {
-	GetAlllCustomer() ([]domain.Customer, error)
+	GetAllCustomer() ([]domain.Customer, error)
+	GetCustomer(string) (*domain.Customer, error)
 }
 
 type DefaultCustomerService struct {
 	repo domain.CustomerRepository
 }
 
-func (s DefaultCustomerService) GetAlllCustomer() ([]domain.Customer, error) {
+func (s DefaultCustomerService) GetAllCustomer() ([]domain.Customer, error) {
 	return s.repo.FindAll()
+}
+
+func (s DefaultCustomerService) GetCustomer(id string) (*domain.Customer, error) {
+	return s.repo.FindCustomerbyID(id)
 }
 
 func NewCustomerService(repository domain.CustomerRepository) DefaultCustomerService {
