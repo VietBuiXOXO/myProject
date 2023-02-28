@@ -2,10 +2,10 @@ package domain
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/vietbui1502/RestAPIGolang/logger"
 )
 
 type CustomerRepositoryDb struct {
@@ -18,7 +18,7 @@ func (d CustomerRepositoryDb) FindAll() ([]Customer, error) {
 	rows, err := d.db.Query(findAllSql)
 
 	if err != nil {
-		log.Println("Error when quering customer table" + err.Error())
+		logger.Error("Error when quering customer table" + err.Error())
 		return nil, err
 	}
 
@@ -28,7 +28,7 @@ func (d CustomerRepositoryDb) FindAll() ([]Customer, error) {
 		var c Customer
 		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.ZipCode, &c.DateofBirth, &c.Status)
 		if err != nil {
-			log.Println("Error when scaning row" + err.Error())
+			logger.Error("Error when scaning row" + err.Error())
 			return nil, err
 		}
 		customers = append(customers, c)
@@ -42,7 +42,7 @@ func (d CustomerRepositoryDb) FindCustomerbyID(id string) (*Customer, error) {
 	rows, err := d.db.Query(findSql, id)
 
 	if err != nil {
-		log.Println("Error when quering customer table" + err.Error())
+		logger.Error("Error when quering customer table" + err.Error())
 		return nil, err
 	}
 
@@ -50,7 +50,7 @@ func (d CustomerRepositoryDb) FindCustomerbyID(id string) (*Customer, error) {
 		var c Customer
 		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.ZipCode, &c.DateofBirth, &c.Status)
 		if err != nil {
-			log.Println("Error when scaning row" + err.Error())
+			logger.Error("Error when scaning row" + err.Error())
 			return nil, err
 		}
 		return &c, nil
@@ -60,9 +60,9 @@ func (d CustomerRepositoryDb) FindCustomerbyID(id string) (*Customer, error) {
 }
 
 func NewCustomerRepositoryDb() CustomerRepositoryDb {
-	client, err := sql.Open("mysql", "root:codecamp@tcp(localhost:3306)/banking")
+	client, err := sql.Open("mysql", "root:codeccamp@tcp(localhost:3306)/banking")
 	if err != nil {
-		panic(err)
+		logger.Error(err.Error())
 	}
 	// See "Important settings" section.
 	client.SetConnMaxLifetime(time.Minute * 3)
