@@ -14,7 +14,7 @@ func init() {
 		"level": "info",
 		"encoding": "json",
 		"disableCaller": false,
-		"outputPaths": ["./logger/app.log"],
+		"outputPaths": ["./logger/app.log", "stdout"],
 		"errorOutputPaths": ["stderr"],
 		"encoderConfig": {
 		  "messageKey": "msg",

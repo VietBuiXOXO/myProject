@@ -1,66 +1,49 @@
 package domain
 
 import (
-	"database/sql"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"github.com/vietbui1502/RestAPIGolang/logger"
 )
 
 type CustomerRepositoryDb struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
 func (d CustomerRepositoryDb) FindAll() ([]Customer, error) {
+	customers := make([]Customer, 0)
+
 	findAllSql := "select customer_id, name, city, zipcode, date_of_birth, status from customers"
 
-	rows, err := d.db.Query(findAllSql)
+	err := d.db.Select(&customers, findAllSql)
 
 	if err != nil {
 		logger.Error("Error when quering customer table" + err.Error())
 		return nil, err
 	}
 
-	customers := make([]Customer, 0)
-
-	for rows.Next() {
-		var c Customer
-		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.ZipCode, &c.DateofBirth, &c.Status)
-		if err != nil {
-			logger.Error("Error when scaning row" + err.Error())
-			return nil, err
-		}
-		customers = append(customers, c)
-	}
 	return customers, nil
 }
 
 func (d CustomerRepositoryDb) FindCustomerbyID(id string) (*Customer, error) {
 	findSql := "select customer_id, name, city, zipcode, date_of_birth, status from customers where customer_id = ?"
 
-	rows, err := d.db.Query(findSql, id)
+	var c Customer
+
+	err := d.db.Get(&c, findSql, id)
 
 	if err != nil {
 		logger.Error("Error when quering customer table" + err.Error())
 		return nil, err
 	}
 
-	if rows.Next() {
-		var c Customer
-		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.ZipCode, &c.DateofBirth, &c.Status)
-		if err != nil {
-			logger.Error("Error when scaning row" + err.Error())
-			return nil, err
-		}
-		return &c, nil
-	}
-
 	return nil, nil
 }
 
 func NewCustomerRepositoryDb() CustomerRepositoryDb {
-	client, err := sql.Open("mysql", "root:codeccamp@tcp(localhost:3306)/banking")
+	client, err := sqlx.Open("mysql", "root:codecamp@tcp(localhost:3306)/banking")
 	if err != nil {
 		logger.Error(err.Error())
 	}
