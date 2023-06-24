@@ -1,0 +1,7 @@
+US1:
+- Write an API to creat a new account for exsting customer
+- AC:
++ A new account can only be opened with a minimum deposit of 5000.00
++ Account can only be of saving or checking type
++ In case of an unexpected arror, API should return status code 500 along with error message
++ The API should return the new account id, when the new acccount is opened with the status code as 201 (CREATED)
