@@ -39,7 +39,7 @@ func (d CustomerRepositoryDb) FindCustomerbyID(id string) (*Customer, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return &c, nil
 }
 
 func NewCustomerRepositoryDb() CustomerRepositoryDb {

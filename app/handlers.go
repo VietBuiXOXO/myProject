@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/vietbui1502/RestAPIGolang/logger"
 	"github.com/vietbui1502/RestAPIGolang/service"
 )
 
@@ -42,6 +43,7 @@ func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) 
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
+		logger.Error("Customer handler get customer error" + err.Error())
 		fmt.Println(w, err.Error())
 	} else {
 		if r.Header.Get("Content-Type") == "application/xml" {
