@@ -24,11 +24,22 @@ func Start() {
 	//accountRepositoryDb := domain.NewAccountRepositoryDb(dbClient)
 
 	ch := CustomerHandlers{customerService: service.NewCustomerService(customerRepositoryDb)}
+	ah := AuthMiddleware{repo: domain.NewAuthRepository()}
 
 	//Define route
-	router.HandleFunc("/customer", ch.getAllCustomer).Methods(http.MethodGet)
-	router.HandleFunc("/customer/{customer_id:[0-9]+}", ch.getCustomer).Methods(http.MethodGet)
-	router.HandleFunc("/customer/{customer_id:[0-9]+}/account", ch.creatAccount).Methods(http.MethodPost)
+	router.
+		HandleFunc("/customer", ch.getAllCustomer).
+		Methods(http.MethodGet)
+
+	router.
+		HandleFunc("/customer/{customer_id:[0-9]+}", ch.getCustomer).
+		Methods(http.MethodGet)
+
+	router.
+		HandleFunc("/customer/{customer_id:[0-9]+}/account", ch.creatAccount).
+		Methods(http.MethodPost)
+
+	router.Use(ah.authorizationHandler())
 
 	//Starting server
 	log.Fatal(http.ListenAndServe(":8088", router))
